@@ -20,3 +20,7 @@ resource "aws_dynamodb_table" "doordash_accounts" {
     projection_type = "ALL"
   }
 }
+
+resource "aws_ecr_repository" "doordash_account_creator" {
+  name = "doordash_account_creator"
+}
