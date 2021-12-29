@@ -57,6 +57,7 @@ resource "aws_cloudwatch_log_group" "doordash_account_generator_log_group" {
 
 resource "aws_ecs_cluster" "doordash_account_generator_ecs_cluster" {
   name = "doordash_account_generator_ecs_cluster"
+  capacity_providers = ["FARGATE"]
 }
 
 resource "aws_ecs_service" "doordash_account_generator_ecs" {
