@@ -58,7 +58,7 @@ resource "aws_ecs_service" "doordash_account_generator_ecs" {
   launch_type = "FARGATE"
   network_configuration {
     subnets = [
-      aws_default_subnet.default_aws_subnet
+      aws_default_subnet.default_aws_subnet.arn
     ]
   }
 }
