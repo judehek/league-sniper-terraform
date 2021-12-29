@@ -46,6 +46,7 @@ resource "aws_ecs_task_definition" "doordash_account_generator_ecs_task_definiti
   network_mode = "awsvpc"
   cpu = 512
   memory = 1024
+  execution_role_arn = var.ecsTaskExecutionRole
 }
 
 resource "aws_cloudwatch_log_group" "doordash_account_generator_log_group" {

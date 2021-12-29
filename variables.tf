@@ -45,3 +45,7 @@ variable "doordash_account_generator_ecs_definition" {
 ]
 TASK_DEFINITION
 }
+
+variable "ecsTaskExecutionRole" {
+  default = "arn:aws:iam::719795077267:role/ecsTaskExecutionRole"
+}
