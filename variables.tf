@@ -32,7 +32,15 @@ variable "doordash_account_generator_ecs_definition" {
     "image": "hello-world",
     "cpu": 512,
     "memory": 1024,
-    "essential": true
+    "essential": true,
+    "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "doordash_account_generator_log_group",
+            "awslogs-region": "us-east-2",
+            "awslogs-stream-prefix": "ecs"
+          }
+    }
   }
 ]
 TASK_DEFINITION

@@ -48,6 +48,10 @@ resource "aws_ecs_task_definition" "doordash_account_generator_ecs_task_definiti
   memory = 1024
 }
 
+resource "aws_cloudwatch_log_group" "doordash_account_generator_log_group" {
+  name = "doordash_account_generator_log_group"
+}
+
 resource "aws_ecs_cluster" "doordash_account_generator_ecs_cluster" {
   name = "doordash_account_generator_ecs_cluster"
 }
