@@ -44,6 +44,8 @@ resource "aws_ecs_task_definition" "doordash_account_generator_ecs_task_definiti
   requires_compatibilities = [
     "FARGATE"]
   network_mode = "awsvpc"
+  cpu = 512
+  memory = 1024
 }
 
 resource "aws_ecs_cluster" "doordash_account_generator_ecs_cluster" {
