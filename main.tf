@@ -27,6 +27,7 @@ resource "aws_default_subnet" "default_aws_subnet" {
   tags = {
     Name = "Default subnet for us-east-2"
   }
+
 }
 
 resource "aws_ecr_repository" "doordash_account_creator" {
@@ -47,6 +48,7 @@ resource "aws_ecs_task_definition" "doordash_account_generator_ecs_task_definiti
   cpu = 512
   memory = 1024
   execution_role_arn = var.ecsTaskExecutionRole
+
 }
 
 resource "aws_cloudwatch_log_group" "doordash_account_generator_log_group" {
@@ -67,5 +69,6 @@ resource "aws_ecs_service" "doordash_account_generator_ecs" {
     subnets = [
       aws_default_subnet.default_aws_subnet.id
     ]
+    assign_public_ip = true
   }
 }
