@@ -60,7 +60,7 @@ resource "aws_ecs_cluster" "doordash_account_generator_ecs_cluster" {
   capacity_providers = ["FARGATE"]
   default_capacity_provider_strategy {
     capacity_provider = "FARGATE"
-    weight = 0
+    weight = 1
     base = 1
   }
 }
