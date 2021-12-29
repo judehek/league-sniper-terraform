@@ -29,7 +29,7 @@ variable "doordash_account_generator_ecs_definition" {
 [
   {
     "name": "doordash-account-generator-container",
-    "image": "hello-world:latest",
+    "image": "docker/hello-world:latest",
     "cpu": 512,
     "memory": 1024,
     "essential": true,
