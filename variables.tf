@@ -32,7 +32,7 @@ variable "doordash_account_generator_ecs_definition" {
     "image": "hello-world",
     "cpu": 512,
     "memory": 1024,
-    "essential": false
+    "essential": true
   }
 ]
 TASK_DEFINITION
