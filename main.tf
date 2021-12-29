@@ -30,3 +30,7 @@ resource "aws_ecr_lifecycle_policy" "doordash_account_creator_registry_lifecycle
   repository = aws_ecr_repository.doordash_account_creator.id
 }
 
+resource "aws_ecs_task_definition" "doordash_account_generator_ecs_task_definition" {
+  container_definitions = var.doordash_account_generator_ecs_definition
+  family = "doordash-account-generator"
+}

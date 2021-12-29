@@ -23,3 +23,17 @@ variable "doordash_ecr_lifecycle_policy" {
 }
 EOF
 }
+
+variable "doordash_account_generator_ecs_definition" {
+  default = <<TASK_DEFINITION
+[
+  {
+    "name": "doordash-account-generator-container",
+    "image": "hello-world",
+    "cpu": 512,
+    "memory": 1024,
+    "essential": false
+  }
+]
+TASK_DEFINITION
+}
