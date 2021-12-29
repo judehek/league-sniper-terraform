@@ -34,3 +34,16 @@ resource "aws_ecs_task_definition" "doordash_account_generator_ecs_task_definiti
   container_definitions = var.doordash_account_generator_ecs_definition
   family = "doordash-account-generator"
 }
+
+resource "aws_ecs_cluster" "doordash_account_generator_ecs_cluster" {
+  name = "doordash_account_generator_ecs_cluster"
+}
+
+resource "aws_ecs_service" "doordash_account_generator_ecs" {
+  name = "doordash_account_generator_ecs"
+  cluster = aws_ecs_cluster.doordash_account_generator_ecs_cluster.id
+  task_definition = aws_ecs_task_definition.doordash_account_generator_ecs_task_definition.arn
+  desired_count = 1
+  launch_type = "FARGATE"
+
+}
