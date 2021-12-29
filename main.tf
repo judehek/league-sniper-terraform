@@ -21,6 +21,14 @@ resource "aws_dynamodb_table" "doordash_accounts" {
   }
 }
 
+resource "aws_default_subnet" "default_aws_subnet" {
+  availability_zone = "us-east-2"
+
+  tags = {
+    Name = "Default subnet for us-east-2"
+  }
+}
+
 resource "aws_ecr_repository" "doordash_account_creator" {
   name = "doordash_account_creator"
 }
@@ -33,7 +41,9 @@ resource "aws_ecr_lifecycle_policy" "doordash_account_creator_registry_lifecycle
 resource "aws_ecs_task_definition" "doordash_account_generator_ecs_task_definition" {
   container_definitions = var.doordash_account_generator_ecs_definition
   family = "doordash-account-generator"
-  requires_compatibilities = ["FARGATE"]
+  requires_compatibilities = [
+    "FARGATE"]
+  network_mode = "awsvpc"
 }
 
 resource "aws_ecs_cluster" "doordash_account_generator_ecs_cluster" {
@@ -46,4 +56,9 @@ resource "aws_ecs_service" "doordash_account_generator_ecs" {
   task_definition = aws_ecs_task_definition.doordash_account_generator_ecs_task_definition.arn
   desired_count = 1
   launch_type = "FARGATE"
+  network_configuration {
+    subnets = [
+      aws_default_subnet.default_aws_subnet
+    ]
+  }
 }
