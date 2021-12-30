@@ -10,6 +10,12 @@ module "lambda_function" {
   runtime       = "nodejs14.x"
   publish       = true
   source_path   = "./src/lambda/built/scheduler_lambda.js"
+  allowed_triggers = {
+    All = {
+      principal = "events.amazon.com"
+      source_arn = module.eventbridge.eventbridge_rule_arns[0]
+    }
+  }
 }
 
 module "eventbridge" {
