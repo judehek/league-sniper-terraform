@@ -1,1 +1,5 @@
 /.idea
+*/.terraform
+/.terraform
+/builds
+*.terraform.lock.hcl

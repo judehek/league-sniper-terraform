@@ -6,7 +6,7 @@ module "account_generator" {
   source = "./account_generator"
 }
 
-moved {
-  from = aws_cloudwatch_log_group.doordash_account_generator_log_group
-  to = module.account_generator.aws_cloudwatch_log_group.doordash_account_generator_log_group
+module "doordash_account_generator_scheduler" {
+  source = "./scheduler_lambda"
+  scheduler_name = "doordash_account_generator_scheduler"
 }
