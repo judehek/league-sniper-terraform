@@ -8,7 +8,7 @@ module "lambda_function" {
 
   function_name = var.scheduler_name
   description   = "Lambda function to invoke a command"
-  handler       = "index.handler"
+  handler       = "scheduler_lambda.handler"
   runtime       = "nodejs14.x"
   publish       = true
   source_path = "./src/lambda/built/scheduler_lambda.js"
