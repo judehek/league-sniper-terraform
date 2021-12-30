@@ -13,7 +13,7 @@ module "lambda_function" {
   allowed_triggers = {
     All = {
       principal = "events.amazon.com"
-      source_arn = module.eventbridge.eventbridge_rule_arns[0]
+      source_arn = module.eventbridge.eventbridge_rule_arns
     }
   }
 }
