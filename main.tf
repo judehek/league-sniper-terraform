@@ -10,5 +10,5 @@ module "doordash_account_generator_scheduler" {
   source = "./scheduler_lambda"
   scheduler_name = "doordash_account_generator_scheduler"
   command = "aws ecs run-task --task doordashbot"
-  rate_expression = "rate(2 minutes)"
+  rate_expression = "rate(7 days)"
 }
