@@ -1,6 +1,3 @@
-
-
-
 module "lambda_function" {
   source = "registry.terraform.io/terraform-aws-modules/lambda/aws"
 
@@ -13,7 +10,7 @@ module "lambda_function" {
   allowed_triggers = {
     All = {
       principal = "events.amazon.com"
-      source_arn = module.eventbridge.eventbridge_rule_arns
+      source_arn = module.eventbridge.eventbridge_rule_arns["crons"]
     }
   }
 }
@@ -33,7 +30,7 @@ module "eventbridge" {
   targets = {
     crons = [
       {
-        name  = "lambda-cron"
+        name  = var.scheduler_name
         arn   = module.lambda_function.lambda_function_arn
         input = jsonencode({
           "job": "cron-by-rate"
