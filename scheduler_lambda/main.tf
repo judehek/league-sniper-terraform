@@ -1,6 +1,4 @@
-variable "scheduler_name" {
-  type = string
-}
+
 
 
 module "lambda_function" {
@@ -11,5 +9,30 @@ module "lambda_function" {
   handler       = "scheduler_lambda.handler"
   runtime       = "nodejs14.x"
   publish       = true
-  source_path = "./src/lambda/built/scheduler_lambda.js"
+  source_path   = "./src/lambda/built/scheduler_lambda.js"
+}
+
+module "eventbridge" {
+  source = "registry.terraform.io/terraform-aws-modules/eventbridge/aws"
+
+  create_bus = false
+
+  rules = {
+    crons = {
+      description         = "Trigger for a Lambda"
+      schedule_expression = var.rate_expression
+    }
+  }
+
+  targets = {
+    crons = [
+      {
+        name  = "lambda-cron"
+        arn   = module.lambda_function.lambda_function_arn
+        input = jsonencode({
+          "job": "cron-by-rate"
+        })
+      }
+    ]
+  }
 }
