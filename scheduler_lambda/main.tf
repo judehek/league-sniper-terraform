@@ -9,7 +9,7 @@ module "lambda_function" {
   source_path   = "./src/lambda/built/scheduler_lambda.js"
   allowed_triggers = {
     All = {
-      principal = "events.amazon.com"
+      principal = "events.amazonaws.com"
       source_arn = module.eventbridge.eventbridge_rule_arns["crons"]
     }
   }
