@@ -7,6 +7,7 @@ module "lambda_function" {
   runtime       = "java11"
   publish       = true
   source_path   = "./lambdas/target/SchedulerLambda-1.0.jar"
+  timeout = 60
   allowed_triggers = {
     All = {
       principal = "events.amazonaws.com"
