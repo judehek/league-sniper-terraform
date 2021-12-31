@@ -3,10 +3,10 @@ module "lambda_function" {
 
   function_name = var.scheduler_name
   description   = "Lambda function to invoke a command"
-  handler       = "scheduler_lambda.handler"
-  runtime       = "nodejs14.x"
+  handler       = "LambdaHandler"
+  runtime       = "java11"
   publish       = true
-  source_path   = "./src/lambda/built/scheduler_lambda.js"
+  source_path   = "./lambdas/target/SchedulerLambda-1.0.jar"
   allowed_triggers = {
     All = {
       principal = "events.amazonaws.com"

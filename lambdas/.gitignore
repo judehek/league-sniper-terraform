@@ -1,0 +1,6 @@
+dependency-reduced-pom.xml
+/target/classes
+/target/generated-sources/
+/target/maven-archiver/
+/target/maven-status/
+/target/original-SchedulerLambda-1.0.jar
