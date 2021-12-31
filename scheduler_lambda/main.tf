@@ -6,6 +6,7 @@ module "lambda_function" {
   handler       = "LambdaHandler"
   runtime       = "java11"
   publish       = true
+  create_package = false
   local_existing_package = "./lambdas/target/SchedulerLambda-1.0.jar"
   timeout = 60
   allowed_triggers = {
