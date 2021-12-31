@@ -14,6 +14,10 @@ module "lambda_function" {
       source_arn = module.eventbridge.eventbridge_rule_arns["crons"]
     }
   }
+  environment_variables = {
+    AWS_ACCESS_KEY_ID = var.AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
+  }
 }
 
 module "eventbridge" {
