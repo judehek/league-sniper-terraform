@@ -3,13 +3,6 @@ public class ECSData {
     public String subnet;
     public String taskDefinition;
 
-    public ECSData(String cluster, String subnet, String taskDefinition) {
-        this.cluster = cluster;
-        this.subnet = subnet;
-        this.taskDefinition = taskDefinition;
-    }
-
-
     public String getCluster() {
         return cluster;
     }
