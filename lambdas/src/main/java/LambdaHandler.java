@@ -23,18 +23,15 @@ public class LambdaHandler implements RequestStreamHandler {
         EcsClient ecsClient = EcsClient.builder()
                 .region(Region.US_EAST_2)
                 .build();
-        logger.log("here1");
         AwsVpcConfiguration vpcConfiguration = AwsVpcConfiguration.builder()
                 .assignPublicIp(AssignPublicIp.ENABLED)
                 .subnets(ecsData.subnet)
                 .build();
 
-        logger.log("here2");
         NetworkConfiguration networkConfiguration = NetworkConfiguration.builder()
                 .awsvpcConfiguration(vpcConfiguration)
                 .build();
 
-        logger.log("here3");
         RunTaskRequest runTaskRequest = RunTaskRequest.builder()
                 .cluster(ecsData.cluster)
                 .networkConfiguration(networkConfiguration)
@@ -44,7 +41,6 @@ public class LambdaHandler implements RequestStreamHandler {
                 .build();
 
         try {
-            logger.log("here4");
             RunTaskResponse result = ecsClient.runTask(runTaskRequest);
             logger.log("start container response: " + result);
             writer.println("success");
@@ -53,6 +49,5 @@ public class LambdaHandler implements RequestStreamHandler {
             writer.println("error");
             writer.println(e);
         }
-
     }
 }
