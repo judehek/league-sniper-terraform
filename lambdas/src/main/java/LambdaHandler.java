@@ -1,3 +1,4 @@
+import com.amazonaws.lambda.thirdparty.com.google.gson.Gson;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.slf4j.Logger;
@@ -6,11 +7,14 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ecs.EcsClient;
 import software.amazon.awssdk.services.ecs.model.*;
 
-public class LambdaHandler implements RequestHandler<ECSData, String> {
+public class LambdaHandler implements RequestHandler<String, String> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private Gson gson = new Gson();
 
     @Override
-    public String handleRequest(ECSData ecsData, Context context) {
+    public String handleRequest(String ecsDataString, Context context) {
+        ECSData ecsData = gson.fromJson(ecsDataString, ECSData.class);
+
         EcsClient ecsClient = EcsClient.builder()
                 .region(Region.US_EAST_2)
                 .build();
