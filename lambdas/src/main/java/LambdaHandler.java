@@ -1,19 +1,25 @@
 import com.amazonaws.lambda.thirdparty.com.google.gson.Gson;
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ecs.EcsClient;
 import software.amazon.awssdk.services.ecs.model.*;
 
-public class LambdaHandler implements RequestHandler<String, String> {
+import java.io.*;
+import java.nio.charset.Charset;
+
+public class LambdaHandler implements RequestStreamHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private Gson gson = new Gson();
 
     @Override
-    public String handleRequest(String ecsDataString, Context context) {
-        ECSData ecsData = gson.fromJson(ecsDataString, ECSData.class);
+    public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) {
+        PrintWriter writer = new PrintWriter(
+                new BufferedWriter(new OutputStreamWriter(outputStream, Charset.forName("US-ASCII"))));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("US-ASCII")));
+        ECSData ecsData = gson.fromJson(reader, ECSData.class);
 
         EcsClient ecsClient = EcsClient.builder()
                 .region(Region.US_EAST_2)
@@ -39,10 +45,11 @@ public class LambdaHandler implements RequestHandler<String, String> {
         try {
             RunTaskResponse result = ecsClient.runTask(runTaskRequest);
             logger.info("start container response: " + result);
-            return "success";
+            writer.println("success");
         } catch (Exception e) {
             logger.error("start container response error: ", e);
-            return "error\n" + e.toString();
+            writer.println("error");
+            writer.println(e);
         }
 
     }
