@@ -29,6 +29,8 @@ module "lambda_function" {
 }
 EOF
   ]
+  number_of_policy_jsons = 1
+
   allowed_triggers = {
     All = {
       principal  = "events.amazonaws.com"
