@@ -72,7 +72,9 @@ module "eventbridge" {
         name  = var.scheduler_name
         arn   = module.lambda_function.lambda_function_arn
         input = jsonencode({
-          "job": "cron-by-rate"
+          "cluster": var.cluster,
+          "subnet": var.subnet_id
+          "taskDefinition": var.task_definition
         })
       }
     ]
