@@ -26,7 +26,8 @@ module "lambda_function" {
         }
     ]
 }
-EOF,
+EOF
+,
 <<EOF
 {
     "Version": "2012-10-17",
