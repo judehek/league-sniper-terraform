@@ -26,9 +26,23 @@ module "lambda_function" {
         }
     ]
 }
+EOF,
+<<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:PassRole"
+            ],
+            "Resource": ["*"]
+        }
+    ]
+}
 EOF
   ]
-  number_of_policy_jsons = 1
+  number_of_policy_jsons = 2
 
   allowed_triggers = {
     All = {
