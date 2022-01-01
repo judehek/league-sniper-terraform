@@ -12,6 +12,8 @@ module "lambda_function" {
   memory_size            = 512
 
   attach_policy_jsons  = true
+  attach_policy_json = true
+  attach_policy = true
   policy_jsons     = [
     <<EOF
 {
