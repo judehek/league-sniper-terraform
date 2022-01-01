@@ -11,7 +11,7 @@ module "lambda_function" {
   timeout                = 60
   memory_size            = 512
 
-  attach_policies  = true
+  attach_policy_jsons  = true
   policy_jsons     = [
     <<EOF
 {
