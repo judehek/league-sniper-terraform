@@ -2,8 +2,6 @@ import com.amazonaws.lambda.thirdparty.com.google.gson.Gson;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ecs.EcsClient;
 import software.amazon.awssdk.services.ecs.model.*;
@@ -25,16 +23,18 @@ public class LambdaHandler implements RequestStreamHandler {
         EcsClient ecsClient = EcsClient.builder()
                 .region(Region.US_EAST_2)
                 .build();
-
+        logger.log("here1");
         AwsVpcConfiguration vpcConfiguration = AwsVpcConfiguration.builder()
                 .assignPublicIp(AssignPublicIp.ENABLED)
                 .subnets(ecsData.subnet)
                 .build();
 
+        logger.log("here2");
         NetworkConfiguration networkConfiguration = NetworkConfiguration.builder()
                 .awsvpcConfiguration(vpcConfiguration)
                 .build();
 
+        logger.log("here3");
         RunTaskRequest runTaskRequest = RunTaskRequest.builder()
                 .cluster(ecsData.cluster)
                 .networkConfiguration(networkConfiguration)
@@ -44,6 +44,7 @@ public class LambdaHandler implements RequestStreamHandler {
                 .build();
 
         try {
+            logger.log("here4");
             RunTaskResponse result = ecsClient.runTask(runTaskRequest);
             logger.log("start container response: " + result);
             writer.println("success");
