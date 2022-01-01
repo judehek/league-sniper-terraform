@@ -1,17 +1,36 @@
 module "lambda_function" {
   source = "registry.terraform.io/terraform-aws-modules/lambda/aws"
 
-  function_name = var.scheduler_name
-  description   = "Lambda function to invoke a command"
-  handler       = "LambdaHandler"
-  runtime       = "java11"
-  publish       = true
-  create_package = false
+  function_name          = var.scheduler_name
+  description            = "Lambda function to invoke a command"
+  handler                = "LambdaHandler"
+  runtime                = "java11"
+  publish                = true
+  create_package         = false
   local_existing_package = "./lambdas/target/SchedulerLambda-1.0.jar"
-  timeout = 60
+  timeout                = 60
+  memory_size            = 512
+
+  attach_policies  = true
+  policy_jsons     = [
+    <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecs:RunTask"
+            ],
+            "Resource": ["*"]
+        }
+    ]
+}
+EOF
+  ]
   allowed_triggers = {
     All = {
-      principal = "events.amazonaws.com"
+      principal  = "events.amazonaws.com"
       source_arn = module.eventbridge.eventbridge_rule_arns["crons"]
     }
   }
