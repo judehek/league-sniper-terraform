@@ -5,7 +5,7 @@ resource "aws_cloudwatch_log_group" "doordash_account_generator_log_group" {
 resource "aws_iam_role" "doordash_account_generator_role" {
   name               = "doordash_account_generator_role"
   assume_role_policy = jsonencode({
-    Version   = "2022-02-06"
+    Version   = "2012-10-17"
     Statement = [
       {
         Action = "dynamodb:*"
