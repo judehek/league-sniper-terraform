@@ -8,8 +8,7 @@ resource "aws_iam_role" "doordash_account_generator_role" {
     Version   = "2022-02-06"
     Statement = [
       {
-        Action = [
-          "dynamodb:*"]
+        Action = "dynamodb:*"
         Effect = "Allow"
         Principal: {
           Service: "ec2.amazonaws.com"
