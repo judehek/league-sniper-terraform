@@ -34,3 +34,13 @@ resource "aws_dynamodb_table" "doordash_accounts" {
     projection_type = "ALL"
   }
 }
+
+resource "aws_dynamodb_table" "original_tracking" {
+  hash_key     = "email"
+  name         = "original_tracking"
+  billing_mode = "PAY_PER_REQUEST"
+  attribute {
+    name = "email"
+    type = "S"
+  }
+}
