@@ -11,10 +11,6 @@ resource "aws_dynamodb_table" "doordash_accounts" {
     type = "S"
   }
   attribute {
-    name = "is_original"
-    type = "S"
-  }
-  attribute {
     name = "is_used"
     type = "S"
   }
@@ -24,20 +20,15 @@ resource "aws_dynamodb_table" "doordash_accounts" {
     projection_type = "ALL"
   }
   global_secondary_index {
-    name            = "IsOriginalIndex"
-    hash_key        = "is_original"
-    projection_type = "ALL"
-  }
-  global_secondary_index {
     name            = "IsUsedIndex"
     hash_key        = "is_used"
     projection_type = "ALL"
   }
 }
 
-resource "aws_dynamodb_table" "original_tracking" {
+resource "aws_dynamodb_table" "account_counting" {
   hash_key     = "email"
-  name         = "original_tracking"
+  name         = "account_counting"
   billing_mode = "PAY_PER_REQUEST"
   attribute {
     name = "email"
