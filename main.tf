@@ -2,15 +2,26 @@ provider "aws" {
   region = var.region
 }
 
-module "account_generator" {
-  source = "./account_generator"
+module "sniper_layer" {
+  source = "${path.module}/layer"
+  create_layer = true
+  layer_name = "sniper-layer"
+  source_path = "${path.module}/layer"
 }
 
-module "doordash_account_generator_scheduler" {
-  source = "./scheduler_lambda"
-  scheduler_name = "doordash_account_generator_scheduler"
-  rate_expression = "rate(3 hours)"
-  cluster = module.account_generator.ecs_cluster
-  subnet_id = module.account_generator.ecs_subnet_id
-  task_definition = module.account_generator.ecs_task_definition
+data "archive_file" "build_code" {
+  type = "zip"
+  source_dir = "${path.module}/sniper/src"
+  output_path = "${path.module}/sniper/output/output.zip"
+}
+
+resource "aws_lambda_function" "sniper_function" {
+  count = "20"
+  filename = "${path.module}/sniper/output/output.zip"
+  function_name = "na-sniper-${count.index + 1}"
+  runtime = "python3.9"
+  timeout = "900"
+  layers = [
+    module.sniper_layer,
+  ]
 }
