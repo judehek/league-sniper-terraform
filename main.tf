@@ -32,7 +32,7 @@ resource "aws_lambda_function" "sniper_function" {
   role = aws_iam_role.lambda_role.arn
   filename = "${path.module}/sniper/output/python.zip"
   function_name = "na-sniper-${count.index + 1}"
-  handler = name_sniper.lambda_handler
+  handler = "name_sniper.lambda_handler"
   runtime = "python3.9"
   timeout = "900"
   layers = ["arn:aws:lambda:us-east-2:260495632885:layer:leagueSniperLayer:2"]
