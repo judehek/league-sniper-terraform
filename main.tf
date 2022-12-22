@@ -2,26 +2,17 @@ provider "aws" {
   region = var.region
 }
 
-module "sniper_layer" {
-  source = "${path.module}/layer"
-  create_layer = true
-  layer_name = "sniper-layer"
-  source_path = "${path.module}/layer"
-}
-
 data "archive_file" "build_code" {
   type = "zip"
   source_dir = "${path.module}/sniper/src"
-  output_path = "${path.module}/sniper/output/output.zip"
+  output_path = "${path.module}/sniper/output/python.zip"
 }
 
 resource "aws_lambda_function" "sniper_function" {
-  count = "20"
-  filename = "${path.module}/sniper/output/output.zip"
+  count = "3"
+  filename = "${path.module}/sniper/output/python.zip"
   function_name = "na-sniper-${count.index + 1}"
   runtime = "python3.9"
   timeout = "900"
-  layers = [
-    module.sniper_layer,
-  ]
+  layers = ["arn:aws:lambda:us-east-2:260495632885:layer:leagueSniperLayer:2"]
 }
