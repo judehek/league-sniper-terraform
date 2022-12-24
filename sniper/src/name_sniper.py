@@ -100,3 +100,9 @@ def lambda_handler(event, context):
 
     #stop lambda
     return
+# {
+#   "username": "Zutberan",
+#   "password": "U8gZF1zRD2hDd1sIU2zTy4k",
+#   "alias": "droste"
+# }
+
