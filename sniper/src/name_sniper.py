@@ -1,14 +1,18 @@
-import logging
 import asyncio
 import requests
 import re
 import time
+import logging
+from logtail import LogtailHandler
 from datetime import datetime
 
 import riot_auth
 
-logging.basicConfig(level = logging.INFO)
-LOGGER = logging.getLogger()
+handler = LogtailHandler(source_token="XQJLiGCLDmeBa14LVuhMyrKC")
+LOGGER = logging.getLogger(__name__)
+LOGGER.handlers = []
+LOGGER.setLevel(logging.INFO)
+LOGGER.addHandler(handler)
 
 purchase_info_url = "https://na.store.leagueoflegends.com/storefront/v3/history/purchase?language=en_GB"
 change_name_url = "https://na.store.leagueoflegends.com/storefront/v3/summonerNameChange/purchase?language=en_GB"
@@ -96,9 +100,3 @@ def lambda_handler(event, context):
 
     #stop lambda
     return
-
-lambda_handler({
-  "username": "Zialuton",
-  "password": "g0nBj4sLU6oTz4jAJ0dAc7eAF4l",
-  "alias": "deserve"
-}, "")
