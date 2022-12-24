@@ -35,5 +35,5 @@ resource "aws_lambda_function" "sniper_function" {
   handler = "name_sniper.lambda_handler"
   runtime = "python3.9"
   timeout = "900"
-  layers = ["arn:aws:lambda:us-east-2:260495632885:layer:leagueSniperLayer:2"]
+  layers = ["arn:aws:lambda:us-east-2:260495632885:layer:leagueSniperLayer:3"]
 }
