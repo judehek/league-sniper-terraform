@@ -7,6 +7,7 @@ from datetime import datetime
 
 import riot_auth
 
+logging.basicConfig(level = logging.INFO)
 LOGGER = logging.getLogger()
 
 purchase_info_url = "https://na.store.leagueoflegends.com/storefront/v3/history/purchase?language=en_GB"
@@ -35,7 +36,7 @@ def lambda_handler(event, context):
     TIME = get_drop_time(event['alias'])
     LOGIN = event['username'], event['password']
 
-    LOGGER.info("[PLAN] Snipe name: %s at %s", event['alias'], datetime.fromtimestamp(TIME))
+    LOGGER.info("[PLAN] Snipe name: %s at %s", event['alias'], datetime.fromtimestamp(TIME / 1000))
 
     auth = riot_auth.RiotAuth()
     auth.RIOT_CLIENT_USER_AGENT = "RiotClient/62.0.1.4852117.4789131 %s (Windows;10;;Professional, x64)" # might have to update, doesn't seem to be issue atm
@@ -95,3 +96,9 @@ def lambda_handler(event, context):
 
     #stop lambda
     return
+
+lambda_handler({
+  "username": "Zialuton",
+  "password": "g0nBj4sLU6oTz4jAJ0dAc7eAF4l",
+  "alias": "deserve"
+}, "")
