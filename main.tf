@@ -27,6 +27,31 @@ resource "aws_iam_role" "lambda_role" {
 EOF
 }
 
+resource "aws_iam_policy" "cloudwatch_policy" {
+  name = "cloud_policy"
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+        ],
+          "Resource": "*"
+      }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy_attachment" "cloudwatch_attachment" {
+  roles      = ["${aws_iam_role.iam_role.name}"]
+  policy_arn = "${aws_iam_policy.policy.arn}"
+} 
+
 resource "aws_lambda_function" "sniper_function" {
   count = "3"
   role = aws_iam_role.lambda_role.arn
@@ -35,5 +60,5 @@ resource "aws_lambda_function" "sniper_function" {
   handler = "name_sniper.lambda_handler"
   runtime = "python3.9"
   timeout = "900"
-  layers = ["arn:aws:lambda:us-east-2:260495632885:layer:leagueSniperLayer:4"]
+  layers = ["arn:aws:lambda:us-east-2:260495632885:layer:league-sniper-layer:1"]
 }
