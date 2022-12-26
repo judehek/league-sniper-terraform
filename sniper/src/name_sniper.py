@@ -3,16 +3,12 @@ import requests
 import re
 import time
 import logging
-from logtail import LogtailHandler
 from datetime import datetime
 
 import riot_auth
 
-handler = LogtailHandler(source_token="XQJLiGCLDmeBa14LVuhMyrKC")
-LOGGER = logging.getLogger(__name__)
-LOGGER.handlers = []
+LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
-LOGGER.addHandler(handler)
 
 purchase_info_url = "https://na.store.leagueoflegends.com/storefront/v3/history/purchase?language=en_GB"
 change_name_url = "https://na.store.leagueoflegends.com/storefront/v3/summonerNameChange/purchase?language=en_GB"
@@ -38,6 +34,9 @@ def update_account_id(account_id, alias):
 def lambda_handler(event, context):
 
     TIME = get_drop_time(event['alias'])
+    if TIME >= 870000:
+        LOGGER.fatal("Name is more than 15 minutes from drop!")
+        return
     LOGIN = event['username'], event['password']
 
     LOGGER.info("[PLAN] Snipe name: %s at %s", event['alias'], datetime.fromtimestamp(TIME / 1000))
