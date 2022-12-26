@@ -54,7 +54,7 @@ resource "aws_iam_policy_attachment" "cloudwatch_attachment" {
 }
 
 resource "aws_lambda_function_url" "lambda_url" {
-  function_name = aws_lambda_function.sniper_function.function_name
+  function_name = aws_lambda_function.sniper_function.*.function_name
   authorization_type = "NONE"
 }
 
