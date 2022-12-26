@@ -51,7 +51,12 @@ resource "aws_iam_policy_attachment" "cloudwatch_attachment" {
   name = "cloudwatch policy"
   roles = ["${aws_iam_role.lambda_role.name}"]
   policy_arn = "${aws_iam_policy.cloudwatch_policy.arn}"
-} 
+}
+
+resource "aws_lambda_function_url" "lambda_url" {
+  function_name      = aws_lambda_function.test.sniper_function
+  authorization_type = "NONE"
+}
 
 resource "aws_lambda_function" "sniper_function" {
   count = "3"
