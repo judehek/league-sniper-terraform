@@ -28,7 +28,7 @@ EOF
 }
 
 resource "aws_iam_policy" "cloudwatch_policy" {
-  name = "cloud_policy"
+  name = "cloudwatch_policy"
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -48,7 +48,8 @@ EOF
 }
 
 resource "aws_iam_policy_attachment" "cloudwatch_attachment" {
-  roles      = ["${aws_iam_role.lambda_role.name}"]
+  name = "cloudwatch policy"
+  roles = ["${aws_iam_role.lambda_role.name}"]
   policy_arn = "${aws_iam_policy.cloudwatch_policy.arn}"
 } 
 
