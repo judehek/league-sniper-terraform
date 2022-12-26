@@ -48,8 +48,8 @@ EOF
 }
 
 resource "aws_iam_policy_attachment" "cloudwatch_attachment" {
-  roles      = ["${aws_iam_role.iam_role.name}"]
-  policy_arn = "${aws_iam_policy.policy.arn}"
+  roles      = ["${aws_iam_role.lambda_role.name}"]
+  policy_arn = "${aws_iam_policy.cloudwatch_policy.arn}"
 } 
 
 resource "aws_lambda_function" "sniper_function" {
