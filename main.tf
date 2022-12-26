@@ -54,6 +54,7 @@ resource "aws_iam_policy_attachment" "cloudwatch_attachment" {
 }
 
 resource "aws_lambda_function_url" "lambda_url" {
+  count = 3
   function_name = element(aws_lambda_function.sniper_function.*.function_name, count.index)
   authorization_type = "NONE"
 }
