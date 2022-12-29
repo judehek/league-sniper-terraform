@@ -80,6 +80,7 @@ def lambda_handler(event, context):
         difference = TIME - (int(time.time()) * 1000)
         if ((difference / 1000) - 1) == 0: # need to account for travel time
             for i in range(25):
+                LOGGER.info("Sent request: %s at: %s", i, datetime.now())
                 response = requests.post(
                     change_name_url,
                     data=update_account_id(account_id, event['alias']),
@@ -87,9 +88,9 @@ def lambda_handler(event, context):
                 )
                 data = response.json()
                 if "transactions" in data:
-                    LOGGER.info("Received successful message on request: %s on account: %s:%s", i, event['username'], event['password'])
+                    LOGGER.info("Received successful message on request: %s on account: %s:%s at time:", i, event['username'], event['password'], datetime.now())
                 else:
-                    LOGGER.info("Failed on request: %s", i)
+                    LOGGER.info("Failed on request: %s at time: %s", i, datetime.now())
                 time.sleep(0.05)
             break
         time.sleep(0.10)

@@ -27,8 +27,8 @@ resource "aws_iam_role" "lambda_role" {
 EOF
 }
 
-resource "aws_iam_policy" "cloudwatch_policy" {
-  name = "cloudwatch_policy"
+resource "aws_iam_policy" "lambda_policy" {
+  name = "lambda_policy"
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -47,16 +47,10 @@ resource "aws_iam_policy" "cloudwatch_policy" {
 EOF
 }
 
-resource "aws_iam_policy_attachment" "cloudwatch_attachment" {
-  name = "cloudwatch policy"
+resource "aws_iam_policy_attachment" "lambda_attatchment" {
+  name = "lambda_attachment"
   roles = ["${aws_iam_role.lambda_role.name}"]
-  policy_arn = "${aws_iam_policy.cloudwatch_policy.arn}"
-}
-
-resource "aws_lambda_function_url" "lambda_url" {
-  count = 3
-  function_name = element(aws_lambda_function.sniper_function.*.function_name, count.index)
-  authorization_type = "NONE"
+  policy_arn = "${aws_iam_policy.lambda_policy.arn}"
 }
 
 resource "aws_lambda_function" "sniper_function" {
