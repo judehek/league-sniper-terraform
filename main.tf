@@ -60,7 +60,7 @@ resource "aws_lambda_function_url" "lambda_url" {
 }
 
 resource "aws_lambda_function" "sniper_function" {
-  count = "3"
+  count = "5"
   role = aws_iam_role.lambda_role.arn
   filename = "${path.module}/sniper/output/python.zip"
   function_name = "na-sniper-${count.index + 1}"

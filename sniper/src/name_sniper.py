@@ -34,9 +34,6 @@ def update_account_id(account_id, alias):
 def lambda_handler(event, context):
 
     TIME = get_drop_time(event['alias'])
-    if TIME >= 870000:
-        LOGGER.fatal("Name is more than 15 minutes from drop!")
-        return
     LOGIN = event['username'], event['password']
 
     LOGGER.info("[PLAN] Snipe name: %s at %s", event['alias'], datetime.fromtimestamp(TIME / 1000))
