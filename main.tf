@@ -54,7 +54,7 @@ resource "aws_iam_policy_attachment" "lambda_attatchment" {
 }
 
 resource "aws_lambda_function" "sniper_function" {
-  count = "5"
+  count = "50"
   role = aws_iam_role.lambda_role.arn
   filename = "${path.module}/sniper/output/python.zip"
   function_name = "na-sniper-${count.index + 1}"
