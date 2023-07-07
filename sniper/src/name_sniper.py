@@ -1,29 +1,29 @@
 import asyncio
 import requests
-import re
-import time
-import logging
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
 import riot_auth
 
-LOGGER = logging.getLogger()
-LOGGER.setLevel(logging.INFO)
+def execute_requests(change_name_url, change_name_headers, change_name_body):
+    max_requests = 25
+    with ThreadPoolExecutor(max_workers=max_requests) as executor:
+        futures = [executor.submit(sniper_request, change_name_url, change_name_headers, change_name_body) for _ in range(max_requests)]
+        _ = [future.result() for future in futures]
 
-purchase_info_url = "https://na.store.leagueoflegends.com/storefront/v3/history/purchase?language=en_GB"
-change_name_url = "https://na.store.leagueoflegends.com/storefront/v3/summonerNameChange/purchase?language=en_GB"
-change_name_referer = "https://na.store.leagueoflegends.com/storefront/ui/v1/app.html?language=en_GB&port=52684&clientRegion=na2&selectedItems=&page=featured&recipientSummonerId="
+def sniper_request(change_name_url, change_name_headers, change_name_body):
+    print("Sending snipe request...")
+    response = requests.post(
+        change_name_url,
+        data=change_name_body,
+        headers=change_name_headers
+    )
+    data = response.json()
+    if "transactions" in data:
+        print(f"Receieved successful message.")
 
-def get_drop_time(alias):
-    url = "https://www.nameslol.com/lol-name-checker?region=na&name=" + alias
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
-    }
-    response = requests.get(url, headers=headers)
-    reg_exp = re.search("(?<=availabilityDate\":)[0-9]{13}", response.text)
-    return int(reg_exp.group(0))
-
-def update_account_id(account_id, alias):
+def UpdateAccountID(account_id, alias):
     change_name_body = '{"summonerName":"'
     change_name_body += alias
     change_name_body += '","accountId":'
@@ -33,68 +33,56 @@ def update_account_id(account_id, alias):
 
 def lambda_handler(event, context):
 
-    TIME = get_drop_time(event['alias'])
+    TIME = event['time']
     LOGIN = event['username'], event['password']
 
-    LOGGER.info("[PLAN] Snipe name: %s at %s", event['alias'], datetime.fromtimestamp(TIME / 1000))
-
     auth = riot_auth.RiotAuth()
-    auth.RIOT_CLIENT_USER_AGENT = "RiotClient/62.0.1.4852117.4789131 %s (Windows;10;;Professional, x64)" # might have to update, doesn't seem to be issue atm
+    auth.RIOT_CLIENT_USER_AGENT = "RiotClient/62.0.1.4852117.4789131 %s (Windows;10;;Professional, x64)"
 
     asyncio.run(auth.authorize(*LOGIN))
-    LOGGER.info("Successfully logged in to account: %s:%s", event['username'], event['password'])
+
+    print(f"Access Token: {auth.access_token}\n")
+
+    purchase_info_url = "https://na.store.leagueoflegends.com/storefront/v3/history/purchase?language=en_GB"
 
     purchase_info_headers = {
         "User-Agent": "RiotClient/18.0.0 (lol-store)",
         "Accept": "application/json",
-        "Authorization": "Bearer " + auth.access_token,
+        "Authorization": f"Bearer {auth.access_token}",
     }
 
-    change_name_headers = {
-        "User-Agent": "RiotClient/18.0.0 (lol-store)",
-        "Accept": "application/json",
-        "Content-type": "application/json",
-        "Authorization": "Bearer " + auth.access_token,
-        "Referer": change_name_referer,
-    }
-
-    # purchase info
     response = requests.get(purchase_info_url, headers=purchase_info_headers)
     data = response.json()
 
     if "player" in data:
         account_id = str(data["player"]["accountId"])
-        be = int(data["player"]["ip"])
-        rp = int(data["player"]["rp"])
-        if be < 13900:
-            # not enough BE
-            LOGGER.fatal("Not enough BE for name change!")
-            return
+        if int(data["player"]["ip"]) < 13900:
+            raise Exception("Not enough essence")
     else:
-        LOGGER.fatal("Failed to get purchase information!")
-        return
-    
-    LOGGER.info("Account: %s:%s BE: %s RP: %s", event['username'], event['password'], be, rp)
-    # change name
-    while True:
-        difference = TIME - (int(time.time()) * 1000)
-        if ((difference / 1000) - 1) == 0: # need to account for travel time
-            for i in range(25):
-                LOGGER.info("Sent request: %s at: %s", i, datetime.now())
-                requests.post(
-                    change_name_url,
-                    data=update_account_id(account_id, event['alias']),
-                    headers=change_name_headers
-                )
-                time.sleep(0.05)
-            break
-        time.sleep(0.10)
+        raise Exception("Failed to get purchase information")
 
-    #stop lambda
+    change_name_url = "https://na.store.leagueoflegends.com/storefront/v3/summonerNameChange/purchase?language=en_GB"
+    change_name_referer = "https://na.store.leagueoflegends.com/storefront/ui/v1/app.html?language=en_GB&port=52684&clientRegion=na2&selectedItems=&page=featured&recipientSummonerId="
+
+    change_name_headers = {
+        "User-Agent": "RiotClient/18.0.0 (lol-store)",
+        "Accept": "application/json",
+        "Content-type": "application/json",
+        "Authorization": f"Bearer {auth.access_token}",
+        "Referer": change_name_referer,
+    }
+
+    change_name_body = UpdateAccountID(account_id, event['alias'])
+
+    target_time = datetime.strptime(TIME, "%m/%d/%Y %I:%M:%S %p")
+    now = datetime.now()
+    time_difference = (target_time - now).total_seconds()
+
+    if time_difference > 0:
+        print(f"Sniping at: {target_time}")
+        timer = threading.Timer(time_difference, lambda: execute_requests(change_name_url, change_name_headers, change_name_body))
+        timer.start()
+
     return
-# {
-#   "username": "Zutberan",
-#   "password": "U8gZF1zRD2hDd1sIU2zTy4k",
-#   "alias": "droste"
-# }
 
+lambda_handler('', '')
