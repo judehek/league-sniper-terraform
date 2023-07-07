@@ -13,7 +13,7 @@ def execute_requests(change_name_url, change_name_headers, change_name_body):
         _ = [future.result() for future in futures]
 
 def sniper_request(change_name_url, change_name_headers, change_name_body):
-    print("Sending snipe request...")
+    print("Sending snipe request...\n")
     response = requests.post(
         change_name_url,
         data=change_name_body,
@@ -21,7 +21,7 @@ def sniper_request(change_name_url, change_name_headers, change_name_body):
     )
     data = response.json()
     if "transactions" in data:
-        print(f"Receieved successful message.")
+        print(f"Receieved successful message\n")
 
 def UpdateAccountID(account_id, alias):
     change_name_body = '{"summonerName":"'
@@ -33,7 +33,7 @@ def UpdateAccountID(account_id, alias):
 
 def lambda_handler(event, context):
 
-    TIME = event['time']
+    TIME = float(event['time'])
     LOGIN = event['username'], event['password']
 
     auth = riot_auth.RiotAuth()
@@ -78,10 +78,8 @@ def lambda_handler(event, context):
     time_difference = (datetime.fromtimestamp(TIME) - now).total_seconds()
 
     if time_difference > 0:
-        print(f"Sniping at: {TIME}")
+        print(f"Sniping at: {TIME}\n")
         timer = threading.Timer(time_difference, lambda: execute_requests(change_name_url, change_name_headers, change_name_body))
         timer.start()
 
     return
-
-lambda_handler('', '')
