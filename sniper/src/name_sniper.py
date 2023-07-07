@@ -75,7 +75,7 @@ def lambda_handler(event, context):
     change_name_body = UpdateAccountID(account_id, event['alias'])
 
     now = datetime.now()
-    time_difference = (TIME - now).total_seconds()
+    time_difference = (datetime.fromtimestamp(TIME) - now).total_seconds()
 
     if time_difference > 0:
         print(f"Sniping at: {TIME}")
