@@ -25,13 +25,6 @@ resource "aws_iam_role" "lambda_role" {
   ]
 }
 EOF
-
-  lifecycle {
-    ignore_changes = [
-      name,
-      assume_role_policy,
-    ]
-  }
 }
 
 resource "aws_iam_policy" "lambda_policy" {
@@ -52,13 +45,6 @@ resource "aws_iam_policy" "lambda_policy" {
   ]
 }
 EOF
-
-  lifecycle {
-    ignore_changes = [
-      name,
-      policy,
-    ]
-  }
 }
 
 resource "aws_iam_policy_attachment" "lambda_attatchment" {
