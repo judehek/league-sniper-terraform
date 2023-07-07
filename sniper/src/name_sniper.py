@@ -74,12 +74,11 @@ def lambda_handler(event, context):
 
     change_name_body = UpdateAccountID(account_id, event['alias'])
 
-    target_time = datetime.strptime(TIME, "%m/%d/%Y %I:%M:%S %p")
     now = datetime.now()
-    time_difference = (target_time - now).total_seconds()
+    time_difference = (TIME - now).total_seconds()
 
     if time_difference > 0:
-        print(f"Sniping at: {target_time}")
+        print(f"Sniping at: {TIME}")
         timer = threading.Timer(time_difference, lambda: execute_requests(change_name_url, change_name_headers, change_name_body))
         timer.start()
 
