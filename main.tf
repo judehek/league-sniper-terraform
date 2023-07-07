@@ -25,6 +25,13 @@ resource "aws_iam_role" "lambda_role" {
   ]
 }
 EOF
+
+  lifecycle {
+    ignore_changes = [
+      name,
+      assume_role_policy,
+    ]
+  }
 }
 
 resource "aws_iam_policy" "lambda_policy" {
@@ -45,21 +52,28 @@ resource "aws_iam_policy" "lambda_policy" {
   ]
 }
 EOF
+
+  lifecycle {
+    ignore_changes = [
+      name,
+      policy,
+    ]
+  }
 }
 
 resource "aws_iam_policy_attachment" "lambda_attatchment" {
   name = "lambda_attachment"
-  roles = ["${aws_iam_role.lambda_role.name}"]
-  policy_arn = "${aws_iam_policy.lambda_policy.arn}"
+  roles = [aws_iam_role.lambda_role.name]
+  policy_arn = aws_iam_policy.lambda_policy.arn
 }
 
 resource "aws_lambda_function" "sniper_function" {
-  count = "50"
+  count = 50
   role = aws_iam_role.lambda_role.arn
   filename = "${path.module}/sniper/output/python.zip"
   function_name = "na-sniper-${count.index + 1}"
   handler = "name_sniper.lambda_handler"
   runtime = "python3.9"
-  timeout = "900"
+  timeout = 900
   layers = ["arn:aws:lambda:us-east-2:260495632885:layer:league-sniper-layer:1"]
 }
