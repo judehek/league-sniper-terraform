@@ -47,19 +47,18 @@ resource "aws_iam_policy" "lambda_policy" {
 EOF
 }
 
-resource "aws_iam_policy_attachment" "lambda_attatchment" {
-  name = "lambda_attachment"
-  roles = [aws_iam_role.lambda_role.name]
-  policy_arn = aws_iam_policy.lambda_policy.arn
+locals {
+  functions = { for i in range(1, 101) : i => { name = "na-sniper-${i}", handler = "name_sniper.lambda_handler"} }
 }
 
 resource "aws_lambda_function" "sniper_function" {
-  count = 50
-  role = aws_iam_role.lambda_role.arn
-  filename = "${path.module}/sniper/output/python.zip"
-  function_name = "na-sniper-${count.index + 1}"
-  handler = "name_sniper.lambda_handler"
-  runtime = "python3.9"
-  timeout = 900
-  layers = ["arn:aws:lambda:us-east-2:260495632885:layer:league-sniper-layer:1"]
+  for_each = local.functions
+
+  role          = aws_iam_role.lambda_role.arn
+  filename      = "${path.module}/sniper/output/python.zip"
+  function_name = each.value.name
+  handler       = each.value.handler
+  runtime       = "python3.9"
+  timeout       = 900
+  layers        = ["arn:aws:lambda:us-east-2:260495632885:layer:league-sniper-layer:1"]
 }

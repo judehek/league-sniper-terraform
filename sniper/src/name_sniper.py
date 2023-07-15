@@ -6,7 +6,7 @@ from aiohttp import ClientSession
 import os
 
 import riot_auth
-#set icon, check last played match, test cases, webserver for managing accounts + deletion
+#todo:set icon, check last played match, test cases, webserver for managing accounts + deletion
 async def execute_requests(change_name_url, change_name_headers, change_name_body, event, account_id):
     max_requests = 25
     print(f"Executing requests...\n")
@@ -51,7 +51,7 @@ async def check_new_blue_essence(account_id, auth_key):
 async def send_insufficient_currency_webhook(event, be):
     webhook_url = "https://discord.com/api/webhooks/1127374172121735309/1iqjSXVbO1T2FHH8Jmml__nSfkxPZ7MqkCLyvNc3_wfjhenwhpMAm0xKVLhll4HMyTux"
     function_name = os.environ['AWS_LAMBDA_FUNCTION_NAME']
-    sniper_function = function_name[-1]
+    sniper_function = function_name.rpartition('-')[-1]
     region = "NA1"
 
     content = f"{region}-{sniper_function}: {event['username']}:{event['password']} - Not enough currency to snipe ({be})"
@@ -71,12 +71,13 @@ async def sniper_request(request_id, change_name_url, change_name_headers, chang
     if "transactions" in data:
         print(f"Received successful message on request: {request_id} for account: {event['username']}:{event['password']}\n")
         if await check_summoner_name(change_name_headers['Authorization'], event['alias']):
+            print(f"Successful message was not a false positive on request: {request_id} and account: {event['username']}:{event['password']}\n")
             await send_successful_webhook(event)
         else:
-            print(f"False positive for request {request_id} and account {event['username']} {event['password']}\n")
+            print(f"False positive for request {request_id} and account: {event['username']}:{event['password']}\n")
         be = await check_new_blue_essence(account_id, change_name_headers['Authorization'])
         if be < 13900:
-            print(f"Account blue essence is too low for request {request_id}: {event['username']}:{event['password']}\n")
+            print(f"Account blue essence is too low for request: {request_id} and account: {event['username']}:{event['password']}\n")
             await send_insufficient_currency_webhook(event, be)
     
 
@@ -89,6 +90,9 @@ async def send_successful_webhook(event):
             {"name": "Username", "value": event['username'], "inline": True},
             {"name": "Password", "value": event['password'], "inline": True},
         ],
+        "footer": {
+        "text": os.environ['AWS_LAMBDA_FUNCTION_NAME']
+      }
     }
     payload = {"embeds": [embed]}
     requests.post(webhook_url, json=payload)
@@ -125,6 +129,7 @@ async def main(event, context):
         be = int(data["player"]["ip"])
         rp = int(data["player"]["rp"])
         if be < 13900:
+            send_insufficient_currency_webhook(event)
             raise Exception("Not enough BE")
     else:
         raise Exception("Failed to get purchase information")
