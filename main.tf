@@ -47,6 +47,11 @@ resource "aws_iam_policy" "lambda_policy" {
 EOF
 }
 
+resource "aws_iam_role_policy_attachment" "attach_lambda_policy" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.lambda_policy.arn
+}
+
 locals {
   functions = { for i in range(1, 101) : i => { name = "na-sniper-${i}", handler = "name_sniper.lambda_handler"} }
 }
