@@ -86,7 +86,7 @@ async def send_successful_webhook(event):
     embed = {
         "title": "Sniping Success",
         "fields": [
-            {"name": "Name                   ", "value": event['alias'], "inline": False},
+            {"name": "Name", "value": event['alias'], "inline": False},
             {"name": "Username", "value": event['username'], "inline": True},
             {"name": "Password", "value": event['password'], "inline": True},
         ],
@@ -129,7 +129,7 @@ async def main(event, context):
         be = int(data["player"]["ip"])
         rp = int(data["player"]["rp"])
         if be < 13900:
-            send_insufficient_currency_webhook(event, be)
+            await send_insufficient_currency_webhook(event, be)
             raise Exception("Not enough BE")
     else:
         raise Exception("Failed to get purchase information")
