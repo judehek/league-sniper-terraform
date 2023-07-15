@@ -50,7 +50,10 @@ jobs:
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
 
             <details><summary>Show Plan</summary>
-            cant display.. too big
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
 
             </details>
 
