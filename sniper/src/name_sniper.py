@@ -129,7 +129,7 @@ async def main(event, context):
         be = int(data["player"]["ip"])
         rp = int(data["player"]["rp"])
         if be < 13900:
-            send_insufficient_currency_webhook(event)
+            send_insufficient_currency_webhook(event, be)
             raise Exception("Not enough BE")
     else:
         raise Exception("Failed to get purchase information")
